@@ -10,48 +10,43 @@
 #include <stdio.h>
 #include <math.h>
 
-struct GLintPoint
-{
-    GLint x, y;
-};
-GLintPoint List [1000];
-int last =-1;
-int anterior = -1;
+using namespace std;
 
-void drawDot(GLint x, GLint y)
+float t=-1.0;
+float delta=0.1;
 
-{
-    // glColor3f( 1.0f, 0.0f, 0.0f ); //Color para pintar
-    glPointSize(8.0);
-    List[++last].x = x;
-    List[  last].y = y;
-    glBegin (GL_POINTS);
-    glVertex2i(x,y);
-    glEnd();
-    glFlush();
-    
-}
-void draw( )
-{
-    //glClear( GL_COLOR_BUFFER_BIT ); // borra los puntos
-    glBegin (GL_LINE_STRIP);
-    for (int i=0; i <= last ; i++)
-    {
-        glVertex2i(List[i].x,List[i].y);
+
+int sumaTotal = 0;
+bool start = false;
+
+
+void myTimer(int i) {
+    if ( start){
+        sumaTotal += 1;
     }
-    glEnd();
+
     
-    glBegin (GL_POINTS);
-    for (int i=0; i <= last ; i++)
-    {
-        glVertex2i(List[i].x,List[i].y);
+    
+    if (i == 1)
+    {   delta = 0.1;
+        t += delta;
+        if ( t >= 1) {
+            t = -1;
+            glutPostRedisplay();
+            glutTimerFunc(1,myTimer,1);
+        }
+        else
+        {
+            glutPostRedisplay();
+            glutTimerFunc(1,myTimer,1);
+        }
     }
     
-    glEnd();
     
-    glFlush();
-    
+
 }
+
+
 
 int	screenWidth = 640, screenHeight = 480;
 
@@ -67,45 +62,52 @@ void reshape(int ancho, int alto) {
     // hace la conversion a openGL
     gluOrtho2D( 0.0,(GLdouble) ancho, 0.0,(GLdouble)  alto);
     
+    
 }
 
 void cronometro() {
-//    glColor3f(0.5,1,1);
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//    glBegin(GL_POLYGON);
-//    glColor3f(0.5,1,1);
-//    glVertex2f(-2, -1.5);
-//    glColor3f(0.5,1,1);
-//    glVertex2f(-2, 1.5);
-//    glColor3f(0.5,1,1);
-//    glVertex2f(2, 1.5);
-//    glColor3f(0.5,1,1);
-//    glVertex2f(2, -1.5);
-//    glEnd();
     
     GLint k;
     
     char msg [200] = "";
-    char mat [200] = "";
-    sprintf(msg, "%s", "0:0:0");
-    sprintf(mat, "%s", "S-Iniciar, D-Detener, R-Reset");
     
-    // dibuja nombre
+    int a,b,c;
+    
+    float x = sumaTotal / 10.0;
+    b = x;
+    
+    x = x - b;
+    
+    x = x * 10;
+    c=x;
+    
+    a = b /60;
+    b = b %60;
+    
+  
+
+    
+    sprintf(msg, "%d : %d . %d", a, b , c);
+    
+    
+    
     glColor3f(1, 1, 1);
-    glRasterPos2f(0, 0); // inicializa raster position
-    for (k=0; msg[k] != '\0'; k++)
-    {
+    glRasterPos2f(10, 10); // inicializa raster position
+    for (k=0; msg[k] != '\0'; k++) {
         glColor3f(1, 1, 1);
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg[k]);
     }
     
-    glColor3f(1, 1, 1);
-    glRasterPos2f(-1.4, -1); // inicializa raster position
-    for (k=0; mat[k] != '\0'; k++)
-    {
-        glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mat[k]);
-    }
+    
+    
+//    char mensaje [200] = "";
+//    sprintf(mensaje, "%s", "S-Iniciar, D-Detener, R-Reset");
+//    glColor3f(1, 1, 1);
+//    glRasterPos2f(-1.4, -1); // inicializa raster position
+//    for (k=0; mensaje[k] != '\0'; k++) {
+//        glColor3f(1, 1, 1);
+//        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje[k]);
+//    }
 }
 
 void myDisplay()
@@ -115,62 +117,39 @@ void myDisplay()
     glColor3f( 1.0f, 0.0f, 0.0f ); //Color para pintar
     cronometro();
     
-    //    glBegin (GL_POINTS);
-    //    glVertex2i(100,100);
-    //    glEnd();
-    
     
     glutSwapBuffers();
     
 }
 
 
-void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
-{
-    GLint x = mouseX;
-    GLint y = screenHeight - mouseY; // cambiar las coordenadas a coordenadas de openGL
-    switch (theKey)
+void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
+       switch (theKey)
     {
         case 'S':
         case 's':
-            draw();
+            start = true;
             break;
             
         case 'R':
         case 'r':
-            anterior = last;
-            last = -1;
-            glClear( GL_COLOR_BUFFER_BIT );
-            glFlush();// Limpia la pantalla
-            
+            start = false;
+            sumaTotal = 0;
             break;
         case 'D':
         case 'd':
-            // algo
+            start = false;
             break;
-            
-
-        case 27: // tecla ESC
-            exit(-1);
-            break;
-            
         default:
             break;		      // do nothing
     }
 }
 
 
-// al mover el mouse dibuja
-void mueveMouse(int x, int y) {
-    
-    y = screenHeight - y;
-    
-    drawDot(x, y);
-}
 
 
-int main( int argc, char ** argv )
-{
+
+int main( int argc, char ** argv ) {
     
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_DOUBLE| GLUT_RGB); // dos buffers
@@ -180,8 +159,8 @@ int main( int argc, char ** argv )
     glutDisplayFunc( myDisplay );
     glutKeyboardFunc(myKeyboard);
     glutReshapeFunc(reshape);
+    glutTimerFunc(100,myTimer,1);
     
-    glutMotionFunc(mueveMouse);
     
     glutMainLoop();
     return 0;
