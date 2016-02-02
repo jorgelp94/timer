@@ -33,12 +33,12 @@ void myTimer(int i) {
         if ( t >= 1) {
             t = -1;
             glutPostRedisplay();
-            glutTimerFunc(1,myTimer,1);
+            glutTimerFunc(100,myTimer,1);
         }
         else
         {
             glutPostRedisplay();
-            glutTimerFunc(1,myTimer,1);
+            glutTimerFunc(100,myTimer,1);
         }
     }
     
@@ -86,13 +86,16 @@ void cronometro() {
     
   
 
-    
-    sprintf(msg, "%d : %d . %d", a, b , c);
+    if (b <= 9) {
+        sprintf(msg, "%d : 0%d . %d", a, b , c);
+    } else {
+        sprintf(msg, "%d : %d . %d", a, b , c);
+    }
     
     
     
     glColor3f(1, 1, 1);
-    glRasterPos2f(10, 10); // inicializa raster position
+    glRasterPos2f(200, 200); // inicializa raster position
     for (k=0; msg[k] != '\0'; k++) {
         glColor3f(1, 1, 1);
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg[k]);
@@ -100,14 +103,23 @@ void cronometro() {
     
     
     
-//    char mensaje [200] = "";
-//    sprintf(mensaje, "%s", "S-Iniciar, D-Detener, R-Reset");
-//    glColor3f(1, 1, 1);
-//    glRasterPos2f(-1.4, -1); // inicializa raster position
-//    for (k=0; mensaje[k] != '\0'; k++) {
-//        glColor3f(1, 1, 1);
-//        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje[k]);
-//    }
+    char mensaje [200] = "";
+    sprintf(mensaje, "%s", "S-Iniciar, D-Detener, R-Reset");
+    glColor3f(1, 1, 1);
+    glRasterPos2f(100, 100); // inicializa raster position
+    for (k=0; mensaje[k] != '\0'; k++) {
+        glColor3f(1, 1, 1);
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje[k]);
+    }
+    
+    char mensaje2 [200] = "";
+    sprintf(mensaje2, "%s", "Esc-Salir");
+    glColor3f(1, 1, 1);
+    glRasterPos2f(300, 70);
+    for (k=0; mensaje2[k] != '\0'; k++) {
+        glColor3f(1, 1, 1);
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje2[k]);
+    }
 }
 
 void myDisplay()
@@ -140,6 +152,10 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'd':
             start = false;
             break;
+            
+        case 27:
+            exit(-1);
+            
         default:
             break;		      // do nothing
     }
@@ -167,83 +183,3 @@ int main( int argc, char ** argv ) {
     
     
 }
-
-
-//#ifdef __APPLE__
-//#include <GLUT/glut.h>
-//#else
-//#include <GL/glut.h>
-//#endif
-//
-//#include <stdlib.h>
-//
-//
-//float t=-1.0;
-//float delta=0.1;
-//
-//void myTimer(int i) {
-//    if (i == 1)
-//    {   delta = 0.1;
-//        t += delta;
-//        if ( t >= 1) {
-//            t = -1;
-//            glutPostRedisplay();
-//            glutTimerFunc(500,myTimer,1);
-//        }
-//        else
-//        {
-//            glutPostRedisplay();
-//            glutTimerFunc(1000,myTimer,1);
-//        }
-//    }
-//    
-//}
-//
-//void display(){ // primera funcion que se manda llamar porque no hay reshape
-//    glClear(GL_COLOR_BUFFER_BIT);
-//    glPointSize(50);
-//    glBegin(GL_POINTS);
-//    glColor3f(1,1,0);
-//    glVertex2f(t,0);
-//    glColor3f(1,0,1);
-//    glVertex2f(0,t);
-//    
-//    glColor3f(1, 1, 0);
-//    glVertex2f(-t, 0);
-//    glColor3f(1, 0, 1);
-//    glVertex2f(0, -t);
-//    glEnd();
-//    glutSwapBuffers();//ya tiene integrado el glFlush
-//    
-//}
-//void myMouseButton(int button, int state, int x, int y)
-//{
-//    
-//    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
-//        exit(0);
-//    else// estar conscientes de que cuando se oprime el mouse siempre se generan 2 eventos.
-//        if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-//            glClearColor(1, 1, 1, 1);
-//        else
-//            if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
-//                glClearColor(1, 0, 0, 1);
-//    
-//}
-//
-//
-//int main(int argc, char *argv[])
-//{
-//    // como no se definió ningun ortho, el default va de -1 a 1 en X y de -1 a 1 en Y
-//    
-//    glutInit(&argc, argv);
-//    glutInitWindowSize(640,480);
-//    glutInitWindowPosition(10,10);
-//    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE ); // dos buffers siempre que sea animación hay que tener dos buffers
-//    glutCreateWindow("Animacion");
-//    glutDisplayFunc(display); // se registra la funcion a desplegar
-//    glutMouseFunc(myMouseButton);
-//    glutTimerFunc(33,myTimer,1); // despues de 33mseg se manda lamar a la funcion timer
-//    glutMainLoop(); // manda llamar primero a la funcion display
-//    return EXIT_SUCCESS;
-//}
-//
