@@ -104,7 +104,7 @@ void cronometro() {
     
     
     char mensaje [200] = "";
-    sprintf(mensaje, "%s", "S-Iniciar, D-Detener, R-Reset");
+    sprintf(mensaje, "%s", "I-Iniciar, S-Stop, R-Reset");
     glColor3f(1, 1, 1);
     glRasterPos2f(100, 100); // inicializa raster position
     for (k=0; mensaje[k] != '\0'; k++) {
@@ -138,8 +138,8 @@ void myDisplay()
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
        switch (theKey)
     {
-        case 'S':
-        case 's':
+        case 'I':
+        case 'i':
             start = true;
             break;
             
@@ -148,8 +148,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             start = false;
             sumaTotal = 0;
             break;
-        case 'D':
-        case 'd':
+        case 'S':
+        case 's':
             start = false;
             break;
             
